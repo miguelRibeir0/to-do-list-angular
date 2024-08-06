@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TitleComponent } from './title/title.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet, TitleComponent],
+  template: `
+    <app-title />
+    <router-outlet />
+  `,
 })
 export class AppComponent {
   title = 'to-do-list-angular';
