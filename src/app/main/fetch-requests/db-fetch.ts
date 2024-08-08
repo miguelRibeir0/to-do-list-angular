@@ -1,11 +1,5 @@
-import { config } from 'dotenv';
-
-config();
-
-const serverUrl = process.env['SERVER_URL'];
-
 const getTasks = async () => {
-  const ans = await fetch(`${serverUrl}/to-do/tasks`);
+  const ans = await fetch(`https://personal-server-miguel.xyz/to-do/tasks`);
 
   const data = await ans.json();
 
@@ -18,18 +12,21 @@ const newTask = async (
   taskDate: string,
   taskUrgency: string
 ) => {
-  const ans = await fetch(`${serverUrl}/to-do/tasks/new`, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      taskName,
-      taskDescription,
-      taskDate,
-      taskUrgency,
-    }),
-  });
+  const ans = await fetch(
+    `https://personal-server-miguel.xyz/to-do/tasks/new`,
+    {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        taskName,
+        taskDescription,
+        taskDate,
+        taskUrgency,
+      }),
+    }
+  );
 
   const data = await ans.json();
 
