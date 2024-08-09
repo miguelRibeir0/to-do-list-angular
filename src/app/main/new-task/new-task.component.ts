@@ -13,7 +13,7 @@ import { newTask } from '../fetch-requests/db-fetch';
       class="flex flex-col gap-y-3 p-7 bg-slate-50 m-7 shadow-sm"
       #taskForm="ngForm"
     >
-      <label class="mb-5 border-b-2 border-green-500 w-fit text-xl">
+      <label class="mb-5 border-b-2 border-green-500 w-fit text-xl font-bold">
         Add new Task
       </label>
       <input
@@ -63,7 +63,7 @@ import { newTask } from '../fetch-requests/db-fetch';
       <input
         type="submit"
         value="Add Task"
-        class="mt-5 p-3 bg-green-500 text-white w-fit rounded cursor-pointer"
+        class="mt-5 p-3 bg-green-500 text-white rounded-xl w-fit cursor-pointer"
         [disabled]="!taskForm.form.valid"
       />
     </form>
