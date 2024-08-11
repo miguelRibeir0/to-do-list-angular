@@ -85,6 +85,8 @@ export class NewTaskComponent {
       this.time = '';
       this.urgency = '';
       this.test = true;
+      // Lazy task refetch after submit
+      window.location.reload();
     } catch (error) {
       console.error('Error adding task:', error);
     }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { getTasks } from '../fetch-requests/db-fetch';
+import { getTasks, deleteTask, taskState } from '../fetch-requests/db-fetch';
 
 @Component({
   selector: 'app-tasks',
@@ -18,12 +18,23 @@ import { getTasks } from '../fetch-requests/db-fetch';
         <div
           class="flex lg:flex-row flex-col lg:gap-x-5 gap-x-2 lg:items-center"
         >
-          <h3 class="font-semibold">
+          <h3
+            class="font-semibold"
+            [ngClass]="{
+              'line-through': task.task_completed
+            }"
+          >
             {{ task.task_name }}
           </h3>
           <p class="hidden lg:block">|</p>
           <p
-            class="border-[1px] border-green-500 p-1 px-3 rounded-xl border-l-0 border-r-0 w-fit mt-2 lg:mt-0"
+            [ngClass]="{
+              'text-green-500': task.task_urgency === 'Low',
+              'text-yellow-500': task.task_urgency === 'Medium',
+              'text-red-500': task.task_urgency === 'High',
+              'line-through': task.task_completed
+            }"
+            class="border-b-[1px] border-black  w-fit mt-2 lg:mt-0"
           >
             Prio: {{ task.task_urgency }}
           </p>
@@ -31,31 +42,49 @@ import { getTasks } from '../fetch-requests/db-fetch';
         <div
           class="flex gap-x-3 items-center justify-center lg:justify-normal mb-4 lg:mb-0"
         >
-          <p
-            class="hover:border-b-2 border-green-500 transition-all ease-out duration-100 cursor-pointer"
+          <!-- <button
+            class="border-b-2 border-b-transparent hover:border-green-500 transition-all ease-out duration-100 cursor-pointer"
           >
             Edit
-          </p>
-          <p>|</p>
-          <p
-            class="hover:border-b-2 border-red-500 transition-all ease-out duration-100 cursor-pointer"
+          </button>
+          <p>|</p> -->
+          <button
+            class="border-b-2 border-b-transparent hover:border-red-500 transition-all ease-out duration-100 cursor-pointer"
+            (click)="deleteTaskA(task.id)"
           >
             Delete
-          </p>
+          </button>
         </div>
       </div>
-      <p>{{ task.task_description }}</p>
+      <p
+        [ngClass]="{
+          'line-through': task.task_completed
+        }"
+      >
+        {{ task.task_description }}
+      </p>
       <div
         class="flex justify-between mt-2 lg:flex-row flex-col items-center gap-y-5"
       >
         <div
           class="flex gap-x-2 p-2 border-[1px] border-black rounded-xl w-fit"
         >
-          <p>Time: {{ task.task_date }} h</p>
+          <p
+            [ngClass]="{
+              'line-through': task.task_completed
+            }"
+          >
+            Time: {{ task.task_date }} h
+          </p>
         </div>
         <div>
-          <button class="p-2 px-3 bg-green-500 text-white rounded-xl">
-            Mark as Completed
+          <button
+            class="p-2 px-3 bg-green-500 text-white rounded-xl"
+            (click)="markAsCompleted(task.id)"
+          >
+            {{
+              task.task_completed ? 'Unmark as Completed' : 'Mark as Completed'
+            }}
           </button>
         </div>
       </div>
@@ -65,10 +94,32 @@ import { getTasks } from '../fetch-requests/db-fetch';
 export class TasksComponent implements OnInit {
   tasks: any[] = [];
 
+  // Tasks Fetch
   async ngOnInit() {
     try {
       const data = await getTasks();
       this.tasks = data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Delete Fetch
+  async deleteTaskA(taskId: number) {
+    try {
+      await deleteTask(taskId);
+      // UI Update
+      this.tasks = this.tasks.filter((task) => task.id !== taskId);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async markAsCompleted(taskId: any) {
+    try {
+      await taskState(taskId);
+      // Lazy task refetch after submit
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }
